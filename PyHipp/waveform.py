@@ -2,6 +2,7 @@ import DataProcessingTools as DPT
 import matplotlib.pyplot as plt
 import hickle as hkl
 import os
+import numpy as np
 
 class Waveform(DPT.DPObject):
     # Please change the class name according to your needs
@@ -67,6 +68,8 @@ class Waveform(DPT.DPObject):
         # from an extra object (wf) to this object
         # It is useful to store the information of the objects for panning through in the future
         DPT.DPObject.append(self, wf)  # append self.setidx and self.dirs
+        self.data = self.data + wf.data
+
         # .........................................
         # ..................code...................
         # .........................................
