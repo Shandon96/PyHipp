@@ -100,7 +100,7 @@ class FreqSpectrum(DPT.DPObject):
 					# get values in array_dict
 					advals = np.array([*self.array_dict.values()])
 					return self.numSets, advals[i-1]+1
-			elif self.current_plot_type == 'Channel' and plot_type == 'Array':  # change from channel to array
+			elif self.current_plot_type == 'Channel' and plot_type == 'Array':  # change from array to channel
 				# get values in array_dict
 				advals = np.array([*self.array_dict.values()])
 				# find index that is larger than i
@@ -121,7 +121,7 @@ class FreqSpectrum(DPT.DPObject):
 				ax = fig.add_subplot(1,1,1)
                 
 			# plot the mountainsort data according to the current index 'i'
-			self.plot_data(i, ax, plotOpts, 1)
+			self.plot_data(i, ax, plotOpts)
 			self.current_plot_type = 'Channel'
     
 		elif plot_type == 'Array':  # plot in channel level
@@ -142,36 +142,35 @@ class FreqSpectrum(DPT.DPObject):
 			currch = cstart
 			plotOpts['LabelsOff'] = True
 			plotOpts['TitleOff'] = True
-			# plotOpts['TicksOff'] = True
+			plotOpts['TicksOff'] = True
 			while currch <= cend :
 				# get channel name
 				currchname = self.dirs[currch]
 				# get axis position for channel
-				ax,isCorner = getChannelInArray(currchname, fig)
-				self.plot_data(currch, ax, plotOpts, isCorner)
+				ax = getChannelInArray(currchname, fig)
+				self.plot_data(currch, ax, plotOpts)
 				currch += 1
 
 			self.current_plot_type = 'Array'
 
-	def plot_data(self, i, ax, plotOpts, isCorner):
+	def plot_data(self, i, ax, plotOpts):
 		y = self.magnitude[i]
 		x = self.freq[i]
 		e = self.magstderr[i]
 		ax.plot(x, y)
 		# show the stderr by adding a shaded area around the y values
 		ax.fill_between(x, y-e, y+e, alpha=0.5)
-		ax.ticklabel_format(axis='both', style='sci', scilimits=(0,3))
 		
-		if (not plotOpts['TitleOff']):
+		if not plotOpts['TitleOff']:
 			ax.set_title(self.dirs[i])
 
-		if (not plotOpts['LabelsOff']) or isCorner:
-			ax.set_xlabel('Freq')
+		if not plotOpts['LabelsOff']:
+			ax.set_xlabel('Freq (Hz)')
 			ax.set_ylabel('Magnitude')
 
-		if plotOpts['TicksOff'] or (not isCorner):
-			ax.set_xticklabels([])
-			ax.set_yticklabels([])
+		if plotOpts['TicksOff']:
+			ax.set_xticks([])
+			ax.set_yticks([])
 
 		if len(plotOpts['XLims']) > 0: 
 			ax.set_xlim(plotOpts['XLims'])
@@ -182,3 +181,4 @@ class FreqSpectrum(DPT.DPObject):
 				ax.set_xlim([0, 10000])
 			else:
 				ax.set_xlim([0, 150])
+

@@ -15,13 +15,4 @@ def getChannelInArray(channel_name, fig):
     else:
         spind = channel_num - 93
 
-    # check if it is the corner subplot so we can add ticks and labels
-    isCorner = 0
-    if channel_num < 97:
-    	if spind == 33:
-    	    isCorner = 1
-    else:
-    	if spind == 26:
-    	    isCorner = 1
-    	    
-    return fig.add_subplot(rows, cols, spind), isCorner
+    return fig.add_subplot(rows, cols, spind)
